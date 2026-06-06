@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jethusan | Tech & Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="templatemo-622-clearwave.css" />
+  <style>
+    /* ── BLOG CARDS ── */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .blog-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .blog-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.25);
+    }
+    .blog-card-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+    .blog-card-body {
+      padding: 20px;
+    }
+    .blog-tag {
+      display: inline-block;
+      background: rgba(var(--accent-rgb, 100,200,150), .15);
+      color: var(--accent);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: .75rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .blog-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .blog-card-desc {
+      font-size: .875rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+    .blog-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: .8rem;
+      color: var(--text-2);
+    }
+    /* ── SKILLS PILLS ── */
+    .skills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .skill-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--text-1);
+      transition: border-color .2s, color .2s;
+    }
+    .skill-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    /* ── DARK MODE ── */
+    body.dark-mode {
+      --bg:           #0D1E1C;
+      --bg-alt:       #111F1D;
+      --surface:      #162421;
+      --surface-2:    #1C2E2B;
+      --accent:       #5BBFB5;
+      --accent-mid:   #2A9D8F;
+      --accent-light: #5BBFB5;
+      --accent-ghost: rgba(91,191,181,0.08);
+      --accent-border:rgba(91,191,181,0.15);
+      --text-1:       #E8F4F2;
+      --text-2:       #8BBFBA;
+      --text-3:       #5A8A85;
+      --border:       rgba(232,244,242,0.08);
+      --shadow-sm:    0 2px 12px rgba(0,0,0,0.3);
+      --shadow-md:    0 8px 32px rgba(0,0,0,0.4);
+      --shadow-lg:    0 24px 64px rgba(0,0,0,0.5);
+    }
+
+    /* ── THEME TOGGLE BUTTON ── */
+    .theme-toggle {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      cursor: pointer;
+      z-index: 9999;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .theme-toggle:hover {
+      transform: scale(1.12);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* ── GALLERY ── */
+    .gallery-wrap {
+      position: relative;
+      overflow: hidden;
+      margin-top: 40px;
+    }
+    .gallery-track {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 0 32px 20px;
+      cursor: grab;
+    }
+    .gallery-track::-webkit-scrollbar { display: none; }
+    .gallery-track.dragging { cursor: grabbing; }
+    .gallery-slide {
+      flex: 0 0 300px;
+      height: 220px;
+      scroll-snap-align: start;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .gallery-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .4s;
+    }
+    .gallery-slide:hover img { transform: scale(1.06); }
+    .gallery-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-60%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      font-size: 1.5rem;
+      color: var(--text-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background .2s;
+    }
+    .gallery-btn:hover { background: var(--accent); color: #fff; }
+    .gallery-prev { left: 8px; }
+    .gallery-next { right: 8px; }
+    .gallery-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 0 0;
+    }
+    .gallery-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background .2s, width .2s;
+      cursor: pointer;
+    }
+    .gallery-dot.active {
+      background: var(--accent);
+      width: 20px;
+      border-radius: 4px;
+    }
+    @media(max-width:600px) {
+      .gallery-slide { flex: 0 0 260px; height: 190px; }
+    }
+
+    /* ── ABOUT VISUAL ── */
+    .about-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-mid));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      border: 3px solid var(--border);
+    }
+    .profile-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+    .profile-loc {
+      font-size: .875rem;
+      color: var(--text-2);
+    }
+    .profile-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .profile-badge {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: .8rem;
+      color: var(--text-2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── MOBILE MENU ── -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation">
+    <a href="#about">About</a>
+    <a href="#blog">Blog</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+    <a href="https://instagram.com/jethu_27" class="mobile-cta btn-primary" target="_blank">@jethu_27</a>
+  </div>
+
+  <!-- ── NAV ── -->
+  <nav class="nav" id="mainNav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Jethusan<span> S</span></a>
+      <ul class="nav-links" role="list">
+        <li><a href="#about">About</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="https://instagram.com/jethu_27" class="btn-ghost" target="_blank">@jethu_27</a>
+        <a href="#contact" class="btn-primary">Hire Me</a>
+      </div>
+      <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <div class="hero-badge reveal">
+            <div class="hero-badge-dot">✦</div>
+            <span>ICT Student &amp; <strong>Aspiring Software Engineer</strong></span>
+          </div>
+          <h1 class="hero-title reveal reveal-delay-1">
+            Hi, I'm Jethusan.<br><em>I build things.</em>
+          </h1>
+          <p class="hero-sub reveal reveal-delay-2">
+            A tech inspired student from Kirankulam, Batticaloa, Sri Lanka. Passionate about software engineering, tech content creation, and turning ideas into reality.
+          </p>
+          <div class="hero-actions reveal reveal-delay-3">
+            <a href="#blog" class="btn-primary-lg">
+              Read My Blog
+              <span class="btn-arrow">→</span>
+            </a>
+            <a href="#projects" class="btn-outline-lg">
+              <span>💻</span> See My Work
+            </a>
+          </div>
+          <div class="hero-trust reveal reveal-delay-4">
+            <div class="trust-item">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              NVQ Level 4 ICT
+            </div>
+            <div class="trust-divider"></div>
+            <div class="trust-item">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              Tech Content Creator
+            </div>
+            <div class="trust-divider"></div>
+            <div class="trust-item">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Batticaloa, Sri Lanka
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal reveal-delay-2">
+          <div class="hero-dashboard">
+            <div class="dashboard-bar">
+              <div class="db-dot"></div><div class="db-dot"></div><div class="db-dot"></div>
+            </div>
+            <div class="dashboard-body">
+              <div class="db-header">
+                <div class="db-title">Tech Journey</div>
+                <div class="db-tag">Live</div>
+              </div>
+              <div class="db-chart">
+                <div class="db-bar" style="height:30%"></div>
+                <div class="db-bar" style="height:45%"></div>
+                <div class="db-bar active" style="height:60%"></div>
+                <div class="db-bar" style="height:70%"></div>
+                <div class="db-bar active" style="height:80%"></div>
+                <div class="db-bar" style="height:75%"></div>
+                <div class="db-bar active" style="height:92%"></div>
+                <div class="db-bar" style="height:88%"></div>
+              </div>
+              <div class="db-stats">
+                <div class="db-stat">
+                  <div class="db-stat-val">AL<span style="font-size:.9rem;color:var(--accent)">M</span></div>
+                  <div class="db-stat-label">Maths Stream</div>
+                  <div class="db-stat-change">Completed</div>
+                </div>
+                <div class="db-stat">
+                  <div class="db-stat-val">NVQ<span style="font-size:.9rem;color:var(--accent)">4</span></div>
+                  <div class="db-stat-label">ICT Level 4</div>
+                  <div class="db-stat-change">Active</div>
+                </div>
+                <div class="db-stat">
+                  <div class="db-stat-val">UoJ<span style="font-size:.9rem;color:var(--accent)"></span></div>
+                  <div class="db-stat-label">Physical Sci.</div>
+                  <div class="db-stat-change">Enrolled</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-float-badge-2">
+            <div class="float-badge-2-val">↑ 🔥</div>
+            <div class="float-badge-2-label">Tech Blog</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TICKER ── -->
+  <div class="ticker-section">
+    <div class="ticker-label">Interests &amp; Passions</div>
+    <div class="ticker-track-wrap">
+      <div class="ticker-track">
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>Software Engineering</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>Android Customization</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>Content Creation</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>Mobile Photography</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>AI &amp; Machine Learning</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>Anime &amp; Cinema</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>Entrepreneurship</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>Tech Community</div>
+        <div class="ticker-dot"></div>
+        <!-- Duplicate for loop -->
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>Software Engineering</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>Android Customization</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>Content Creation</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>Mobile Photography</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>AI &amp; Machine Learning</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>Anime &amp; Cinema</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><div class="ticker-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>Entrepreneurship</div>
+        <div class="ticker-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ABOUT ── -->
+  <section class="features-section" id="about">
+    <div class="container">
+      <div class="features-header">
+        <div class="section-label reveal">About Me</div>
+        <h2 class="section-title reveal reveal-delay-1">Who is<br><em>Jethusan?</em></h2>
+        <p class="section-sub reveal reveal-delay-2">A passionate student enthusiast from Kirankulam, Batticaloa, Sri Lanka — building skills, collecting memories, creating content, and dreaming big to succeed in life.</p>
+      </div>
+
+      <!-- About Row -->
+      <div class="feature-row">
+        <div class="feature-content reveal">
+          <div class="feature-number">01 — My Story</div>
+          <h3 class="feature-title">From Batticaloa to<br><em>Success Life</em></h3>
+          <p class="feature-desc">I'm Jethusan, an ICT student from Batticaloa, Sri Lanka. Currently pursuing NVQ Level 4 ICT and also got selected for the Physical Science Stream (BSc) at University of Jaffna.</p>
+          <div class="feature-checklist">
+            <div class="feature-check"><div class="check-icon">✓</div><span>AL Maths Stream — Completed</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>NVQ Level 4 ICT — Active</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>BSc Physical Science — University of Jaffna (July 2025)</span></div>
+          </div>
+        </div>
+        <div class="feature-visual reveal reveal-delay-1">
+          <div class="feature-visual-inner">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px;">
+              <div class="profile-avatar">J</div>
+              <div class="profile-name">Jethusan</div>
+              <div class="profile-loc">📍 Batticaloa, Sri Lanka</div>
+              <div class="profile-badges">
+                <div class="profile-badge">🎓 NVQ L4 ICT</div>
+                <div class="profile-badge">🔬 BSc @ UoJ</div>
+                <div class="profile-badge">📸 Content Creator</div>
+                <div class="profile-badge">⚡ CEB Experience</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skills Row -->
+      <div class="feature-row reverse" id="skills">
+        <div class="feature-content reveal">
+          <div class="feature-number">02 — Tech Skills</div>
+          <h3 class="feature-title">Tools &amp; technologies<br><em>I work with</em></h3>
+          <p class="feature-desc">From Android customization and Linux terminal tools to web development and AI tools — I love exploring the full tech stack on mobile and beyond.</p>
+          <div class="skills-wrap">
+            <div class="skill-pill">HTML / CSS</div>
+            <div class="skill-pill">JavaScript</div>
+            <div class="skill-pill">Python</div>
+            <div class="skill-pill">Android / ADB</div>
+            <div class="skill-pill">Linux / Termux</div>
+            <div class="skill-pill">MS Office</div>
+            <div class="skill-pill">Git / GitHub</div>
+            <div class="skill-pill">Lightroom</div>
+            <div class="skill-pill">CapCut</div>
+            <div class="skill-pill">AI Tools</div>
+          </div>
+        </div>
+        <div class="feature-visual reveal reveal-delay-1">
+          <div class="feature-visual-inner">
+            <div class="fv-card">
+              <div class="fv-card-label">Current Learning Path</div>
+              <div class="fv-list" style="margin-top:8px">
+                <div class="fv-list-item"><span class="fv-list-name">AL Maths Stream</span><span class="fv-pill green">Completed</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">NVQ ICT Level 4</span><span class="fv-pill blue">Active</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">BSc Physical Science — UoJ</span><span class="fv-pill dim">July 2025</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">Web Development</span><span class="fv-pill green">Learning</span></div>
+              </div>
+            </div>
+            <div class="fv-row">
+              <div class="fv-card fv-wide">
+                <div class="fv-card-label">Goal</div>
+                <div class="fv-card-val" style="font-size:1.1rem">Software Engineer 🚀</div>
+              </div>
+              <div class="fv-card">
+                <div class="fv-card-label">From</div>
+                <div class="fv-card-val" style="font-size:1rem">🇱🇰 LK</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BLOG ── -->
+  <section class="features-section" id="blog" style="padding-top:0">
+    <div class="container">
+      <div class="features-header">
+        <div class="section-label reveal">Blog</div>
+        <h2 class="section-title reveal reveal-delay-1">Latest <em>Posts</em></h2>
+        <p class="section-sub reveal reveal-delay-2">Tech tips, Android tricks, study notes, and thoughts from my journey.</p>
+      </div>
+      <div class="blog-grid">
+        <div class="blog-card reveal">
+          <img src="images/tm-622-screen-01.jpg" alt="Android Tips" class="blog-card-img" />
+          <div class="blog-card-body">
+            <div class="blog-tag">Android</div>
+            <div class="blog-card-title">HyperOS Customization — iOS Style on Redmi 12</div>
+            <div class="blog-card-desc">How I made my Redmi 12 look and feel like an iPhone using ADB tweaks, custom fonts, and animation scaling.</div>
+            <div class="blog-card-meta">
+              <span>✦ 5 min read</span>
+              <span>·</span>
+              <span>Android / HyperOS</span>
+            </div>
+          </div>
+        </div>
+        <div class="blog-card reveal reveal-delay-1">
+          <img src="images/tm-622-screen-02.jpg" alt="Termux Guide" class="blog-card-img" />
+          <div class="blog-card-body">
+            <div class="blog-tag">Linux</div>
+            <div class="blog-card-title">Termux Complete Setup — yt-dlp, FFmpeg &amp; More</div>
+            <div class="blog-card-desc">A complete guide to setting up a powerful Linux environment on Android using Termux — no PC needed.</div>
+            <div class="blog-card-meta">
+              <span>✦ 8 min read</span>
+              <span>·</span>
+              <span>Termux / Linux</span>
+            </div>
+          </div>
+        </div>
+        <div class="blog-card reveal reveal-delay-2">
+          <img src="images/tm-622-screen-03.jpg" alt="Photography" class="blog-card-img" />
+          <div class="blog-card-body">
+            <div class="blog-tag">Photography</div>
+            <div class="blog-card-title">Mobile Photography Tips — Getting the Best Shots</div>
+            <div class="blog-card-desc">My workflow for mobile photography: from shooting to editing with Lightroom presets and AI enhancement tools.</div>
+            <div class="blog-card-meta">
+              <span>✦ 6 min read</span>
+              <span>·</span>
+              <span>Photography</span>
+            </div>
+          </div>
+        </div>
+        <div class="blog-card reveal">
+          <img src="images/tm-622-screen-04.jpg" alt="Ad Blocking" class="blog-card-img" />
+          <div class="blog-card-body">
+            <div class="blog-tag">Privacy</div>
+            <div class="blog-card-title">Block All Ads on Android — NetGuard + Hosts File</div>
+            <div class="blog-card-desc">No root needed! How I block ads system-wide on Android using NetGuard and a custom hosts file.</div>
+            <div class="blog-card-meta">
+              <span>✦ 4 min read</span>
+              <span>·</span>
+              <span>Privacy / Android</span>
+            </div>
+          </div>
+        </div>
+        <div class="blog-card reveal reveal-delay-1">
+          <img src="images/tm-622-screen-05.jpg" alt="Instagram Tips" class="blog-card-img" />
+          <div class="blog-card-body">
+            <div class="blog-tag">Social Media</div>
+            <div class="blog-card-title">Instagram Tamil Music Trick — No VPN Needed</div>
+            <div class="blog-card-desc">A simple workaround for adding Tamil songs to your Instagram Reels when you're outside India region.</div>
+            <div class="blog-card-meta">
+              <span>✦ 3 min read</span>
+              <span>·</span>
+              <span>Instagram Tips</span>
+            </div>
+          </div>
+        </div>
+        <div class="blog-card reveal reveal-delay-2">
+          <img src="images/tm-622-screen-01.jpg" alt="Photography" class="blog-card-img" />
+          <div class="blog-card-body">
+            <div class="blog-tag">Photography</div>
+            <div class="blog-card-title">Golden Hour Photography — Capturing Batticaloa's Beauty</div>
+            <div class="blog-card-desc">How I shoot stunning golden hour photos on my Redmi 12 — composition tips, Lightroom editing, and locations around Batticaloa.</div>
+            <div class="blog-card-meta">
+              <span>✦ 5 min read</span>
+              <span>·</span>
+              <span>Photography</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GALLERY ── -->
+  <section class="features-section" id="gallery" style="padding-top:0">
+    <div class="container">
+      <div class="features-header">
+        <div class="section-label reveal">Gallery</div>
+        <h2 class="section-title reveal reveal-delay-1">My <em>Memories</em></h2>
+        <p class="section-sub reveal reveal-delay-2">Moments, places, and shots from my journey. Swipe to explore 📸</p>
+      </div>
+    </div>
+    <div class="gallery-wrap">
+      <div class="gallery-track" id="galleryTrack">
+        <div class="gallery-slide">
+          <img src="images/gallery/photo1.jpg" alt="Photo 1" onerror="this.parentElement.style.display='none'" />
+        </div>
+        <div class="gallery-slide">
+          <img src="images/gallery/photo2.jpg" alt="Photo 2" onerror="this.parentElement.style.display='none'" />
+        </div>
+        <div class="gallery-slide">
+          <img src="images/gallery/photo3.jpg" alt="Photo 3" onerror="this.parentElement.style.display='none'" />
+        </div>
+        <div class="gallery-slide">
+          <img src="images/gallery/photo4.jpg" alt="Photo 4" onerror="this.parentElement.style.display='none'" />
+        </div>
+        <div class="gallery-slide">
+          <img src="images/gallery/photo5.jpg" alt="Photo 5" onerror="this.parentElement.style.display='none'" />
+        </div>
+        <div class="gallery-slide">
+          <img src="images/gallery/photo6.jpg" alt="Photo 6" onerror="this.parentElement.style.display='none'" />
+        </div>
+      </div>
+      <button class="gallery-btn gallery-prev" id="galleryPrev">‹</button>
+      <button class="gallery-btn gallery-next" id="galleryNext">›</button>
+      <div class="gallery-dots" id="galleryDots"></div>
+    </div>
+    <div class="container" style="margin-top:16px">
+      <p class="section-sub" style="font-size:.85rem;color:var(--text-3);text-align:center;">
+        📁 To add photos: Upload JPG files to <code style="background:var(--surface);padding:2px 8px;border-radius:6px;font-size:.8rem;">images/gallery/</code> folder on GitHub as <code style="background:var(--surface);padding:2px 8px;border-radius:6px;font-size:.8rem;">photo1.jpg, photo2.jpg...</code>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── STATS ── -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card reveal">
+          <div class="stat-rule"></div>
+          <div class="stat-value"><span class="stat-num" data-target="3">0</span><span class="stat-suffix">+</span></div>
+          <div class="stat-label">Years in Tech</div>
+          <div class="stat-sublabel">Coding, building, learning</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-1">
+          <div class="stat-rule"></div>
+          <div class="stat-value"><span class="stat-num" data-target="10">0</span><span class="stat-suffix">+</span></div>
+          <div class="stat-label">Blog Posts</div>
+          <div class="stat-sublabel">Android, Linux, Tech Tips</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-2">
+          <div class="stat-rule"></div>
+          <div class="stat-value"><span class="stat-num" data-target="1">0</span><span class="stat-suffix"></span></div>
+          <div class="stat-label">Degree Enrolled</div>
+          <div class="stat-sublabel">BSc @ UoJ</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-3">
+          <div class="stat-rule"></div>
+          <div class="stat-value"><span class="stat-num" data-target="100">0</span><span class="stat-suffix">%</span></div>
+          <div class="stat-label">Passion Level</div>
+          <div class="stat-sublabel">Always growing 🚀</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ── -->
+  <section class="features-section" id="projects" style="padding-top:40px">
+    <div class="container">
+      <div class="features-header">
+        <div class="section-label reveal">Projects</div>
+        <h2 class="section-title reveal reveal-delay-1">Things I've <em>built</em></h2>
+        <p class="section-sub reveal reveal-delay-2">Personal projects, experiments, and tools I've created along the way.</p>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-content reveal">
+          <div class="feature-number">01 — Personal Blog</div>
+          <h3 class="feature-title">This website —<br><em>built from scratch</em></h3>
+          <p class="feature-desc">My personal blog and portfolio website. Built with HTML, CSS, and JavaScript. Features dark mode, smooth animations, and a clean iOS-inspired aesthetic.</p>
+          <div class="feature-checklist">
+            <div class="feature-check"><div class="check-icon">✓</div><span>Custom HTML/CSS/JS</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>Mobile responsive design</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>Hosted on GitHub Pages</span></div>
+          </div>
+        </div>
+        <div class="feature-visual reveal reveal-delay-1">
+          <div class="feature-visual-inner">
+            <div class="fv-card">
+              <div class="fv-card-label">Tech Stack</div>
+              <div class="fv-list" style="margin-top:8px">
+                <div class="fv-list-item"><span class="fv-list-name">HTML5 + CSS3</span><span class="fv-pill green">Done</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">Vanilla JavaScript</span><span class="fv-pill green">Done</span></div>
+                <div class="fv-list-item"><span class="fv-list-name">GitHub Pages hosting</span><span class="fv-pill blue">Live</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-row reverse">
+        <div class="feature-content reveal">
+          <div class="feature-number">02 — Instagram</div>
+          <h3 class="feature-title">@jethu_27 —<br><em>My personal page</em></h3>
+          <p class="feature-desc">My personal Instagram page sharing Android tips, mobile photography, tech news, and everyday life. Building a community of tech enthusiasts in Sri Lanka.</p>
+          <div class="feature-checklist">
+            <div class="feature-check"><div class="check-icon">✓</div><span>Android &amp; HyperOS tips</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>Mobile photography content</span></div>
+            <div class="feature-check"><div class="check-icon">✓</div><span>Tech tutorials &amp; reviews</span></div>
+          </div>
+        </div>
+        <div class="feature-visual reveal reveal-delay-1">
+          <div class="feature-visual-inner">
+            <div class="fv-row">
+              <div class="fv-card fv-wide">
+                <div class="fv-card-label">Platform</div>
+                <div class="fv-card-val" style="font-size:1.1rem">Instagram</div>
+                <div class="fv-card-bar"><div class="fv-card-bar-fill" style="width:70%"></div></div>
+              </div>
+              <div class="fv-card">
+                <div class="fv-card-label">Handle</div>
+                <div class="fv-card-val" style="font-size:.9rem">@jethu_27</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ / CONTACT ── -->
+  <section class="faq-section" id="contact">
+    <div class="container">
+      <div class="faq-inner">
+        <div class="faq-sidebar reveal">
+          <div class="section-label">Contact</div>
+          <h2 class="section-title">Let's<br><em>connect</em></h2>
+          <p class="section-sub">Have a question, collab idea, or just want to say hi? I'm always open to connecting with fellow tech enthusiasts.</p>
+          <button class="faq-toggle-all" id="faqToggleAll">
+            <span id="faqToggleIcon">+</span> Expand all</button>
+        </div>
+        <div class="faq-list reveal reveal-delay-1" id="faqList">
+          <div class="faq-item">
+            <div class="faq-question" tabindex="0" role="button" aria-expanded="false">
+              How can I reach you?
+              <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer"><div class="faq-answer-inner">You can reach me on Instagram @jethu_27. I try to reply within 24 hours.</div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" tabindex="0" role="button" aria-expanded="false">
+              Are you open for collaborations?
+              <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer"><div class="faq-answer-inner">Yes! I'm open to tech content collaborations, guest blog posts, and project work. If you have an interesting idea, feel free to reach out on Instagram.</div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" tabindex="0" role="button" aria-expanded="false">
+              What topics do you write about?
+              <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer"><div class="faq-answer-inner">I write about Android customization, Termux &amp; Linux on mobile, mobile photography, privacy &amp; ad blocking, and tech tips for students.</div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" tabindex="0" role="button" aria-expanded="false">
+              Are you available for freelance work?
+              <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer"><div class="faq-answer-inner">I'm currently a student but I'm open to small freelance projects like simple websites, tech documentation, or content creation. Let's talk and see what we can work out!</div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" tabindex="0" role="button" aria-expanded="false">
+              Where are you based?
+              <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer"><div class="faq-answer-inner">I'm from Batticaloa, Sri Lanka 🇱🇰. Most of my work is done remotely and mobile-first — I do everything from my phone when I'm not at a computer!</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA BANNER ── -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-inner reveal">
+        <div class="cta-content">
+          <div class="cta-label">✦ Let's Connect</div>
+          <h2 class="cta-title">Follow my<br><em>tech journey</em></h2>
+          <p class="cta-sub">Join me on Instagram for daily tech tips, Android tricks, and content from Batticaloa to the world. 🚀</p>
+        </div>
+        <div class="cta-actions">
+          <a href="https://instagram.com/jethu_27" class="btn-cta-primary" target="_blank">
+            @jethu_27
+            <span>→</span>
+          </a>
+          <a href="#contact" class="btn-cta-ghost">Contact Me</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">Jethusan<span style="color:var(--accent-light)"> S</span></a>
+          <p class="footer-brand-desc">Tech student, content creator, and aspiring software engineer from Kirankulam, Batticaloa, Sri Lanka. Building the future one line of code at a time.</p>
+          <div class="footer-socials">
+            <a href="https://instagram.com/jethu_27" class="social-btn" aria-label="Instagram" target="_blank">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-label">Navigate</div>
+          <div class="footer-links">
+            <a href="#about">About Me</a>
+            <a href="#blog">Blog</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-label">Education</div>
+          <div class="footer-links">
+            <a href="#">AL Maths Stream</a>
+            <a href="#">NVQ Level 4 ICT</a>
+            <a href="#">BSc — Univ. of Jaffna</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-label">Topics</div>
+          <div class="footer-links">
+            <a href="#">Android Tips</a>
+            <a href="#">Linux / Termux</a>
+            <a href="#">Mobile Photography</a>
+            <a href="#">Privacy &amp; Security</a>
+            <a href="#">Student Life</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">
+          © 2025 Jethusan · Batticaloa, Sri Lanka 🇱🇰
+        </div>
+        <div class="footer-legal">
+          <a href="#">Privacy</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── DARK/LIGHT TOGGLE ── -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">🌙</button>
+
+  <script src="templatemo-622-clearwave.js"></script>
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+      document.body.classList.add('dark-mode');
+      toggle.textContent = '☀️';
+    }
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      toggle.textContent = isDark ? '☀️' : '🌙';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+    // Gallery swipe
+    const track = document.getElementById('galleryTrack');
+    const slides = track ? track.querySelectorAll('.gallery-slide') : [];
+    const dotsWrap = document.getElementById('galleryDots');
+    if (track && slides.length) {
+      slides.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'gallery-dot' + (i===0?' active':'');
+        d.onclick = () => { slides[i].scrollIntoView({behavior:'smooth',block:'nearest',inline:'start'}); };
+        dotsWrap.appendChild(d);
+      });
+      track.addEventListener('scroll', () => {
+        const idx = Math.round(track.scrollLeft / (track.scrollWidth / slides.length));
+        dotsWrap.querySelectorAll('.gallery-dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+      });
+      document.getElementById('galleryPrev').onclick = () => { track.scrollBy({left:-316,behavior:'smooth'}); };
+      document.getElementById('galleryNext').onclick = () => { track.scrollBy({left:316,behavior:'smooth'}); };
+      // Touch/drag
+      let startX, isDown=false;
+      track.addEventListener('mousedown', e => { isDown=true; startX=e.pageX-track.offsetLeft; track.classList.add('dragging'); });
+      track.addEventListener('mouseleave', () => { isDown=false; track.classList.remove('dragging'); });
+      track.addEventListener('mouseup', () => { isDown=false; track.classList.remove('dragging'); });
+      track.addEventListener('mousemove', e => { if(!isDown) return; e.preventDefault(); track.scrollLeft -= (e.pageX-track.offsetLeft-startX)*2; startX=e.pageX-track.offsetLeft; });
+    }
+  </script>
+</body>
+</html>
