@@ -105,6 +105,7 @@
       --shadow-sm:    0 2px 12px rgba(0,0,0,0.3);
       --shadow-md:    0 8px 32px rgba(0,0,0,0.4);
       --shadow-lg:    0 24px 64px rgba(0,0,0,0.5);
+      --dashboard-bar-bg: #1a2e2b;
     }
 
     /* ── THEME TOGGLE BUTTON ── */
@@ -333,7 +334,7 @@
 
         <div class="hero-visual reveal reveal-delay-2">
           <div class="hero-dashboard" style="border-radius:20px;overflow:hidden;">
-            <div class="dashboard-bar" style="background:#ffffff;">
+            <div class="dashboard-bar" style="background:var(--dashboard-bar-bg, #ffffff);">
               <div class="db-dot"></div><div class="db-dot"></div><div class="db-dot"></div>
             </div>
             <div class="dashboard-body">
