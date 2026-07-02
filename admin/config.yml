@@ -10,7 +10,11 @@ collections:
     label: Gallery Photos
     folder: images/gallery
     create: true
-    extension: jpg
+    format: frontmatter
     fields:
-      - {label: Photo, name: title, widget: string}
-      - {label: Image, name: body, widget: image}
+      - label: Title
+        name: title
+        widget: string
+      - label: Image
+        name: image
+        widget: image
